@@ -36,7 +36,7 @@ model.load_weights(MODEL_WEIGHTS)
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 model._make_predict_function()
 
-model.summary()
+# model.summary()
 
 # IMAGE PROCESSING
 datagen = ImageDataGenerator(
@@ -57,8 +57,11 @@ def predict_letter(img):
 
 @app.route('/', methods=['GET'])
 def hello():
-    print('hi')
     return 'oh'
+
+@app.route('/get_word', methods=['GET'])
+def generate_word():
+    return "lion"
 
 
 @app.route('/classify_letter', methods=['GET'])
@@ -80,6 +83,6 @@ def post():
 
 
 if __name__ == '__main__':
-	#port = int(os.environ.get('PORT', 8000))
-	#app.run(host='0.0.0.0', port=port,debug=True)
+	port = int(os.environ.get('PORT', 8000))
+	app.run(host='0.0.0.0', port=port,debug=True)
 	app.run(debug=True)

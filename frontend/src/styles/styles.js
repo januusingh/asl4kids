@@ -5,8 +5,15 @@ export const Background = styled.div`
   text-align: center;
   background-color: #CEEEF2;
   min-height: 100vh;
-  padding-top: 0px;
-  overflow-y: hidden;
+  min-width: 100vw;
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  grid-template-rows: 100px 1fr 1fr 1fr 100px;
+  grid-template-areas: "back-button header"
+                       "picture picture"
+                       ". word"
+                       ". letter"
+                       "footer footer";
 `;
 
 export const Button = styled.button`
@@ -22,9 +29,7 @@ export const Button = styled.button`
 `;
 
 export const Cloud = styled.img`
-  position: absolute;
   height: 100px;
-  transform: translate(-50%, 0px);
 `;
 
 export const Webcam = styled.div`

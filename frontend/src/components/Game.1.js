@@ -111,7 +111,7 @@ class Game extends Component {
         
         {/* <DisplayPicture started={this.started} /> */}
         {!this.state.started && 
-          <StartButton onClick={this.start}>MAKE A LION</StartButton>
+          <StartButton onClick={this.start}>Start</StartButton>
         }
         {this.state.started && 
           <Picture src={require(`../icons/${this.state.word.toLowerCase()}.png`)}/>
