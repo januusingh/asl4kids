@@ -62,6 +62,17 @@ top: 300px;
 left: 30%;
 `;
 
+const ImgContainer = styled.div`
+  width: 100px;
+  height: 100px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 50%;
+`;
+
+
+
+
 
 class Game extends Component {
   constructor () {
@@ -108,14 +119,19 @@ class Game extends Component {
           <Cloud src={cloud}/>
           <Cloud src={cloud}/>
         </PictureContainer>
-        
+       
+       
+
         {/* <DisplayPicture started={this.started} /> */}
         {!this.state.started && 
-          <StartButton onClick={this.start}>Start</StartButton>
+          <StartButton onClick={this.start}>MAKE A LION</StartButton>
         }
+        <ImgContainer> 
         {this.state.started && 
           <Picture src={require(`../icons/${this.state.word.toLowerCase()}.png`)}/>
         }
+
+        </ImgContainer>
 
 
         {/* <CurrentLetter>

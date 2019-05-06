@@ -1,15 +1,12 @@
 import React, { Component } from 'react'
 import '../App.css';
-import axios from 'axios';
 import * as S from "../styles/styles";
 import styled from "styled-components";
-import { navigate } from "@reach/router";
 import { Link } from "@reach/router";
 import rainbow from "../icons/rainbow.png";
 import food_cloud from "../icons/food_cloud.png";
 import colors_cloud from "../icons/colors_cloud.png";
 import animals_cloud from "../icons/animals_cloud.png";
-import cloud from "../icons/cloud.png";
 import hands from "../icons/hands.png"
 
 const Background = styled.div`
@@ -69,10 +66,10 @@ class Game extends Component {
                 <Rainbow src={rainbow}/>
                 <TitleText>  ASL 4 Kids</TitleText>
                 <ChooseText>Choose a category:</ChooseText>
+                <Cloud src={food_cloud} section="main1"/>
                 <Link to="/game">
-                    <Cloud src={food_cloud} section="main1"/>
+                    <Cloud src={animals_cloud} section="main2"/>
                 </Link>
-                <Cloud src={animals_cloud} section="main2"/>
                 <Cloud src={colors_cloud} section="main3"/>
                 <Hands src={hands}/>
             </Background>
