@@ -8,9 +8,9 @@ import requests
 import time, operator
 import cv2
 
-from keras.utils import get_file
-from keras.models import load_model
-from keras.preprocessing.image import ImageDataGenerator
+# from keras.utils import get_file
+# from keras.models import load_model
+# from keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 import numpy as np
 from random import shuffle
@@ -71,14 +71,22 @@ def preprocess(img):
     return img
 
 def correct_letter(img, letter):
+    if img is None or not img.all():
+        return "False"
+    letter = letter.upper()
     model = models[letter]
+    # print(img)
     img = cv2.resize(img,(64,64))
     img = preprocess(img)
     img = img.flatten()
     img = img.reshape(1,img.shape[0])
 
     y = model.predict(img)
-    return y
+    if y[0]: 
+        return "True"
+    else:
+        return "False"
+    # return y[0]
 
 @app.route('/', methods=['GET'])
 def hello():
@@ -104,7 +112,8 @@ def begin_classification():
     camera = cv2.VideoCapture(0)
     _, image = camera.read()
     cv2.imwrite('images/img.png', image)
-    img = Image.open('images/img.png')
+    img = cv2.imread('images/img.png')
+    # img = Image.open('images/img.png')
     del(camera)
 
     return correct_letter(img, currWord[currIndex])

@@ -123,6 +123,7 @@ class Game extends Component {
     this.classifyLetter = this.classifyLetter.bind(this)
     this.start = this.start.bind(this)
     this.loop = this.loop.bind(this)
+    this.timeout = this.timeout.bind(this)
   }
 
   start() {
@@ -137,37 +138,47 @@ class Game extends Component {
 
   }
 
+  timeout() {
+    this.loop()
+  }
+
   classifyLetter () {
     axios.get('http://localhost:5000/classify_letter')
       .then(response => {
-        this.setState({correct: response.data})
+        this.setState({correct: (response.data === 'True')})
       })
   }
 
   loop() {
-    while (!this.state.done && this.state.index < 500) {
-      this.state.index += 1;
+    while (!this.state.done && this.state.index < 100) {
+      this.setState({index: this.state.index + 1})
       if (this.state.currentLetter < 0) {
-        this.state.done = true;
+        this.setState({done: true})
+
         return
       }
       this.classifyLetter()
       if (this.state.correct) {
-        this.state.checkOrX = "check";
+        this.setState({checkOrX: "check"})
         axios.get('http://localhost:5000/next_letter')
         .then(response => {
           this.setState({currentLetter: response.data})
         })
-        this.state.correct = false;
+        this.setState({correct: false})
         setTimeout(returnFunc, 3000)
+
       } else {
-         this.state.checkOrX = "X";
+        this.setState({correct: false})
+        setTimeout(this.timeout(), 10)
+        return
         //  if (this.state.displayCorrect) {
         //    setTimeout(returnFunc, 3000)
 
         //  }
       }
+      
     }
+    // this.state.checkOrX = "check";
 
   }
 
