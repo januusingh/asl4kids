@@ -118,7 +118,6 @@ class Game extends Component {
     }
     this.classifyLetter = this.classifyLetter.bind(this)
     this.start = this.start.bind(this)
-    this.loop = this.loop.bind(this)
     this.classify = this.classify.bind(this)
   }
 
