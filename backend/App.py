@@ -29,7 +29,7 @@ CLASSES = ['A','B', 'C','D', 'E','F', 'G', \
            'O','P', 'Q','R', 'S','T', 'U', \
            'V','W','X','Y','Z','del','nothing','space']
 
-words = ['lion']
+words = ['cat']
 currWord = words[0]
 currIndex = 0
 
@@ -71,7 +71,8 @@ def preprocess(img):
     return img
 
 def correct_letter(img, letter):
-    if img is None or not img.all():
+    if img is None or not img.any():
+        print('false')
         return "False"
     letter = letter.upper()
     model = models[letter]
@@ -82,7 +83,10 @@ def correct_letter(img, letter):
     img = img.reshape(1,img.shape[0])
 
     y = model.predict(img)
+    # print(model.predict_proba(img))
+    # print(y)
     if y[0]: 
+        print("True")
         return "True"
     else:
         return "False"
@@ -94,28 +98,33 @@ def hello():
 
 @app.route('/get_word', methods=['GET'])
 def generate_word():
+    global currIndex
+    currIndex = 0
     return currWord
 
 @app.route('/next_letter', methods=['GET'])
 def next_letter():
     global currIndex
     global currWord
-    if currIndex < len(currWord):
+    print(currIndex)
+    if currIndex < len(currWord)-1:
         currIndex += 1
         return currWord[currIndex]
     else: 
-        return "-1"
+        return "Done"
 
 
 @app.route('/classify_letter', methods=['GET'])
 def begin_classification():
+
     camera = cv2.VideoCapture(0)
     _, image = camera.read()
-    cv2.imwrite('images/img.png', image)
-    img = cv2.imread('images/img.png')
+    img = image
+    # cv2.imwrite('images/img.jpg', image)
+    # img = cv2.imread('images/img.jpg')
     # img = Image.open('images/img.png')
     del(camera)
-
+    # print(img.shape)
     return correct_letter(img, currWord[currIndex])
 
 @app.route('/post', methods=['GET','POST'])

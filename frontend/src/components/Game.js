@@ -3,7 +3,7 @@ import '../App.css'
 import axios from 'axios'
 import * as S from "../styles/styles";
 import styled from "styled-components";
-import { Link } from "@reach/router";
+import { Link, Redirect} from "@reach/router";
 import cloud from "../icons/cloud.png";
 import Webcam from "react-webcam";
 
@@ -27,7 +27,7 @@ const Background = styled.div`
     grid-template-rows: .1fr .60fr .15fr .20fr .60fr;
     grid-template-areas: "back-button back-button header header webcam webcam"
                         "cloud1 cloud1 image image webcam webcam"
-                        ". . word word . ."
+                        ". . word word classify classify"
                         ". l-text l-text s-text s-text ."
                         ". letter letter sign sign .";
     justify-items: center;
@@ -72,6 +72,10 @@ const StartButton = styled.button`
   :hover {
     background-color: gray;
   }
+`;
+
+const ClassifyButton = styled(StartButton)`
+  grid-area: classify;
 `;
 
 const Text = styled.h1`
@@ -124,6 +128,7 @@ class Game extends Component {
     this.start = this.start.bind(this)
     this.loop = this.loop.bind(this)
     this.timeout = this.timeout.bind(this)
+    this.classify = this.classify.bind(this)
   }
 
   start() {
@@ -134,8 +139,34 @@ class Game extends Component {
                     img_src: "../icons/" + response.data + ".png",
                     started: true})
     })
-    this.loop()
 
+  }
+
+  classify() {
+
+    this.classifyLetter()
+    console.log(this.state.correct)
+    if (this.state.correct) {
+      
+      this.setState({checkOrX: "check"})
+      axios.get('http://localhost:5000/next_letter')
+      .then(response => {
+        this.setState({currentLetter: response.data})
+        console.log(this.state.currentLetter)
+          if (this.state.currentLetter == "Done") {
+            this.setState({done: true,
+                          currentLetter: ":)"})
+            return
+          }
+      })
+
+      this.setState({correct: false})
+      // setTimeout(returnFunc, 3000)
+
+    } else {
+      this.setState({correct: false})
+      this.setState({checkOrX: "X"})
+    }
   }
 
   timeout() {
@@ -145,19 +176,27 @@ class Game extends Component {
   classifyLetter () {
     axios.get('http://localhost:5000/classify_letter')
       .then(response => {
-        this.setState({correct: (response.data === 'True')})
+        console.log(response.data)
+        console.log(response.data == "True")
+        this.setState({correct: (response.data === "True")})
       })
+    console.log("classify")
   }
 
   loop() {
+    console.log("Starting")
+    console.log(this.state.done)
     while (!this.state.done && this.state.index < 100) {
+      console.log("loop")
       this.setState({index: this.state.index + 1})
       if (this.state.currentLetter < 0) {
         this.setState({done: true})
+        this.setState({currentLetter: ":)"})
 
         return
       }
       this.classifyLetter()
+      console.log(this.state.correct)
       if (this.state.correct) {
         this.setState({checkOrX: "check"})
         axios.get('http://localhost:5000/next_letter')
@@ -169,8 +208,9 @@ class Game extends Component {
 
       } else {
         this.setState({correct: false})
-        setTimeout(this.timeout(), 10)
-        return
+        this.setState({checkOrX: "X"})
+        // setTimeout(this.timeout(), 10)
+        
         //  if (this.state.displayCorrect) {
         //    setTimeout(returnFunc, 3000)
 
@@ -178,6 +218,7 @@ class Game extends Component {
       }
       
     }
+    console.log("Done")
     // this.state.checkOrX = "check";
 
   }
@@ -190,6 +231,9 @@ class Game extends Component {
   }
 
   render () {
+    // if (this.state.done) {
+    //   return <Redirect to="/"/>
+    // } else {
     return (
         <Background>
           <Text font_size='42pt' section='header'>ASL 4 Kids</Text>
@@ -200,6 +244,10 @@ class Game extends Component {
           <WebcamContainer>
             <Webcam audio={false} height={400} width={400}/>
           </WebcamContainer>
+
+          {!this.state.done && 
+            <ClassifyButton onClick={this.classify}>Classify</ClassifyButton>
+          }
 
           {!this.state.started && 
             <StartButton onClick={this.start}>Start</StartButton>
@@ -217,7 +265,7 @@ class Game extends Component {
           }
           
           <Container section='letter'>
-            <Letter font_size='78pt'>{this.state.currentLetter.toUpperCase()}</Letter>
+            <Letter font_size='78pt'>{this.state.currentLetter}</Letter>
           </Container>
 
           <Container section='sign'>
@@ -227,7 +275,7 @@ class Game extends Component {
 
         </Background>
         
-    )
+    )//}
   }
 }
 export default Game
