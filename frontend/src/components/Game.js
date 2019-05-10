@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import '../App.css'
 import axios from 'axios'
-import * as S from "../styles/styles";
 import styled from "styled-components";
 import { Link, Redirect} from "@reach/router";
 import cloud from "../icons/cloud.png";
@@ -11,7 +10,6 @@ const BackButton = styled.button`
   grid-area: back-button;
   font-size: 28px;
   border-radius: 15%;
-  // align-self: left;
   :hover {
     background-color: gray;
   }
@@ -43,8 +41,6 @@ const Container = styled.div`
   overflow: hidden;
   background-color: white;
   text-align: center;
-  // line-height: 65px;
-  // vertical-align: middle;
 `;
 
 const Cloud = styled.img`
@@ -105,10 +101,6 @@ function UCfirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function returnFunc () {
-  return;
-}
-
 class Game extends Component {
   constructor () {
     super ()
@@ -127,7 +119,6 @@ class Game extends Component {
     this.classifyLetter = this.classifyLetter.bind(this)
     this.start = this.start.bind(this)
     this.loop = this.loop.bind(this)
-    this.timeout = this.timeout.bind(this)
     this.classify = this.classify.bind(this)
   }
 
@@ -161,16 +152,11 @@ class Game extends Component {
       })
 
       this.setState({correct: false})
-      // setTimeout(returnFunc, 3000)
 
     } else {
       this.setState({correct: false})
       this.setState({checkOrX: "X"})
     }
-  }
-
-  timeout() {
-    this.loop()
   }
 
   classifyLetter () {
@@ -183,57 +169,7 @@ class Game extends Component {
     console.log("classify")
   }
 
-  loop() {
-    console.log("Starting")
-    console.log(this.state.done)
-    while (!this.state.done && this.state.index < 100) {
-      console.log("loop")
-      this.setState({index: this.state.index + 1})
-      if (this.state.currentLetter < 0) {
-        this.setState({done: true})
-        this.setState({currentLetter: ":)"})
-
-        return
-      }
-      this.classifyLetter()
-      console.log(this.state.correct)
-      if (this.state.correct) {
-        this.setState({checkOrX: "check"})
-        axios.get('http://localhost:5000/next_letter')
-        .then(response => {
-          this.setState({currentLetter: response.data})
-        })
-        this.setState({correct: false})
-        setTimeout(returnFunc, 3000)
-
-      } else {
-        this.setState({correct: false})
-        this.setState({checkOrX: "X"})
-        // setTimeout(this.timeout(), 10)
-        
-        //  if (this.state.displayCorrect) {
-        //    setTimeout(returnFunc, 3000)
-
-        //  }
-      }
-      
-    }
-    console.log("Done")
-    // this.state.checkOrX = "check";
-
-  }
-
-  getResults() {
-    axios.get('http://localhost:5000/classify_letter')
-    .then(response => {
-      this.setState({classifications: response.data})
-    })
-  }
-
   render () {
-    // if (this.state.done) {
-    //   return <Redirect to="/"/>
-    // } else {
     return (
         <Background>
           <Text font_size='42pt' section='header'>ASL 4 Kids</Text>
